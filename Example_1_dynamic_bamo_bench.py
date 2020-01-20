@@ -28,7 +28,7 @@ def load(time):
     lam = 0.0
   return lam
 
-# Lets prepare a time loop, with recoding the time and displacement
+#Lets prepare a time loop, with recoding the time and displacement
 rec_t = []
 rec_u = []
 rec_tu = []

@@ -4,8 +4,8 @@ import numpy as np
 
 def Elmt_Init():
     NoElementNodes = 2
-    NoElementHistory = 12
-    ElementDofNames = ["U", "T"]
+    NoElementHistory = 18
+    ElementDofNames = ["U", "T","Rho"]
     ElementMaterialNames = ["E", "A", "nu", "rho", "alpha", "c"]
     ElementPostNames = ["A", "Sig"]
     return NoElementNodes, ElementDofNames, NoElementHistory, ElementMaterialNames, ElementPostNames
@@ -24,8 +24,8 @@ def Elmt_KS(XI, UI, Hn, Ht, Mat, dt):
     '''
     verbose = False  # True;
     # element vector /matrix
-    r_e = np.zeros(4)
-    k_e = np.zeros((4, 4))
+    r_e = np.zeros(5)
+    k_e = np.zeros((5, 5))
     # nodal coordinates
     X1 = XI[0]
     X2 = XI[1]
@@ -38,6 +38,8 @@ def Elmt_KS(XI, UI, Hn, Ht, Mat, dt):
     U2 = UI[2]
     T1 = UI[1]
     T2 = UI[3]
+    R1 = UI[4]
+    R2 = UI[5]
     # load previous values from history Hn
     U1_n = Hn[0]
     U2_n = Hn[1]
@@ -51,6 +53,12 @@ def Elmt_KS(XI, UI, Hn, Ht, Mat, dt):
     A2_n = Hn[9]
     T1ddt_n = Hn[10]
     T2ddt_n = Hn[11]
+    R1_n = Hn[12]
+    R2_n = Hn[13]
+    R1dt_n = Hn[14]
+    R2dt_n = Hn[15]
+    R1ddt_n = Hn[16]
+    R2ddt_n = Hn[17]
     if (verbose):
         print('U_n :', [U1_n, U2_n])
     if (verbose):
@@ -71,10 +79,14 @@ def Elmt_KS(XI, UI, Hn, Ht, Mat, dt):
     V2 = Newmark_V(U2, U2_n, V2_n, A2_n, gamma, beta, dt)
     T1dt = Newmark_V(T1, T1_n, T1dt_n, T1ddt_n, gamma, beta, dt)
     T2dt = Newmark_V(T2, T2_n, T1dt_n, T1ddt_n, gamma, beta, dt)
+    R1dt = Newmark_V(R1, R1_n, R1dt_n, R1ddt_n, gamma, beta, dt)
+    R2dt = Newmark_V(R2, R2_n, R1dt_n, R1ddt_n, gamma, beta, dt)
     A1 = Newmark_A(U1, U1_n, V1_n, A1_n, gamma, beta, dt)
     A2 = Newmark_A(U2, U2_n, V2_n, A2_n, gamma, beta, dt)
     T1ddt = Newmark_A(T1, T1_n, T1dt_n, T1ddt_n, gamma, beta, dt)
     T2ddt = Newmark_A(T2, T2_n, T2dt_n, T2ddt_n, gamma, beta, dt)
+    R1ddt = Newmark_A(R2, R2_n, R2dt_n, R2ddt_n, gamma, beta, dt)
+    R2ddt = Newmark_A(R2, R2_n, R2dt_n, R2ddt_n, gamma, beta, dt)
     if (verbose):
         print('U :', [U1, U2])
     if (verbose):
